@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Classroom</title> <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Top Bar Layout (Matches your photo) */
+        .header-container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 50px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 800;
+            width: 250px; /* Forces the text to wrap like your drawing */
+            line-height: 1.2;
+            color: #222;
+        }
+
+        /* Search Bar Placeholder */
+        .search-bar {
+            flex-grow: 1;
+            margin-left: 50px;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            color: #888;
+            font-size: 16px;
+            background: #fdfdfd;
+        }
+
+        /* Game Grid (3 Columns) */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* Game Square */
+        .game-card {
+            aspect-ratio: 1 / 1;
+            border: 3px solid #000; /* Bold borders like your sketch */
+            background-color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: #007bff;
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .label {
+            margin-top: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <div class="title">Woodpecker (from dps) game portal</div>
+        <input type="text" class="search-bar" placeholder="Search games...">
+    </div>
+
+    <div class="grid">
+        <div class="game-item">
+            <div class="game-card" onclick="launchGame('slope.html')">
+                <img src="https://via.placeholder.com/300?text=Slope" alt="Slope">
+            </div>
+            <div class="label">Slope</div>
+        </div>
+
+        <div class="game-item">
+            <div class="game-card" onclick="launchGame('minecraft.html')">
+                <img src="https://via.placeholder.com/300?text=Minecraft" alt="Minecraft">
+            </div>
+            <div class="label">Minecraft</div>
+        </div>
+
+        <div class="game-item">
+            <div class="game-card" onclick="launchGame('retro-bowl.html')">
+                <img src="https://via.placeholder.com/300?text=Retro+Bowl" alt="Retro Bowl">
+            </div>
+            <div class="label">Retro Bowl</div>
+        </div>
+
+        </div>
+
+    <script>
+        function launchGame(url) {
+            // Opens the about:blank page
+            var win = window.open('about:blank', '_blank');
+            if (win) {
+                win.document.body.style.margin = '0';
+                win.document.body.style.height = '100vh';
+                
+                // Creates the internal frame to host your Hub site
+                var iframe = win.document.createElement('iframe');
+                iframe.style.border = 'none';
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.margin = '0';
+                iframe.src = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + url;
+
+                win.document.body.appendChild(iframe);
+            } else {
+                alert("Please allow pop-ups to play!");
+            }
+        }
+    </script>
+
+</body>
+</html>
