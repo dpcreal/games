@@ -2,139 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Woodpecker(from dps) game portal</title>
+    <title>Dashboard</title>
     <style>
-        /* General styling for the page */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
+        body { font-family: sans-serif; padding: 40px; display: flex; flex-direction: column; align-items: center; background: #f4f4f4; }
+        .header { width: 100%; max-width: 1000px; display: flex; justify-content: flex-start; margin-bottom: 40px; }
+        .title { font-size: 24px; font-weight: bold; width: 220px; line-height: 1.2; }
+        .search-bar { flex-grow: 1; margin-left: 30px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 25px; 
+            width: 100%; 
+            max-width: 1000px; 
+        }
+
+        .game-box { 
+            aspect-ratio: 1/1; 
+            border: 2px solid #333; 
+            cursor: pointer; 
+            display: flex; 
             flex-direction: column;
-            align-items: center;
+            align-items: center; 
+            justify-content: center;
+            background: white;
+            transition: 0.2s;
+            text-decoration: none; /* Removes underline from links */
+            color: black;
         }
 
-        /* Top section layout */
-        .top-container {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            justify-content: flex-start; /* Align content to the left */
-            align-items: flex-start; /* Top align items */
-            margin-bottom: 20px;
-        }
-
-        /* Title style based on your photo */
-        .page-title {
-            width: 30%; /* Limits title width to create line breaks like in photo */
-            font-size: 24px;
-            font-weight: bold;
-            margin: 0;
-            padding-right: 20px;
-        }
-
-        /* Placeholder for your search bar text */
-        .search-placeholder {
-            flex-grow: 1; /* Occupies remaining space */
-            text-align: left;
-            font-size: 16px;
-            margin: 0;
-        }
-
-        /* Grid container for the games */
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Exactly 3 columns as requested */
-            gap: 20px; /* Space between grid items */
-            width: 100%;
-            max-width: 1000px;
-        }
-
-        /* Styling for each game box */
-        .game-box {
-            width: 100%;
-            aspect-ratio: 1 / 1; /* Makes the box a perfect square */
-            border: 2px solid #ccc;
-            border-radius: 8px; /* Optional slight rounding for better look */
-            cursor: pointer;
-            overflow: hidden; /* Ensures nothing spills out of the border */
-            transition: transform 0.2s, box-shadow 0.2s;
-            background-color: #f9f9f9;
-        }
-
-        /* Hover effects for game boxes */
-        .game-box:hover {
-            transform: scale(1.03); /* Subtle zoom-in */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            border-color: #007BFF; /* Blue border on hover */
-        }
-
-        /* Makes sure images inside game-boxes fit perfectly */
-        .game-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Images cover the space without stretching */
-            display: block; /* Prevents alignment issues */
-        }
+        .game-box:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .game-box img { width: 80%; height: 80%; object-fit: contain; }
     </style>
 </head>
 <body>
 
-    <div class="top-container">
-        <h1 class="page-title">Woodpecker(from dps) game portal</h1>
-        <p class="search-placeholder">Search bar will be here.</p>
+    <div class="header">
+        <div class="title">Woodpecker (from dps) game portal</div>
+        <input type="text" class="search-bar" placeholder="Search for games...">
     </div>
 
-    <div class="game-grid">
+    <div class="grid">
+        <a href="./slope/index.html" class="game-box">
+            <img src="slope-icon.png" alt="Slope">
+            <span>SLOPE</span>
+        </a>
 
-        <div class="game-box" onclick="launch('YOUR_GAME_URL_1_HERE')">
-            <img src="YOUR_IMAGE_PATH_1_HERE" alt="Game 1 Title">
-        </div>
+        <a href="game2.html" class="game-box">
+            <div style="font-size: 40px;">🎮</div>
+            <span>GAME 2</span>
+        </a>
 
-        <div class="game-box" onclick="launch('YOUR_GAME_URL_2_HERE')">
-            <img src="YOUR_IMAGE_PATH_2_HERE" alt="Game 2 Title">
-        </div>
-
-        <div class="game-box" onclick="launch('YOUR_GAME_URL_3_HERE')">
-            <img src="YOUR_IMAGE_PATH_3_HERE" alt="Game 3 Title">
-        </div>
-
-        <div class="game-box" onclick="launch('YOUR_GAME_URL_4_HERE')">
-            <img src="YOUR_IMAGE_PATH_4_HERE" alt="Game 4 Title">
-        </div>
-
-        <div class="game-box" onclick="launch('YOUR_GAME_URL_5_HERE')">
-            <img src="YOUR_IMAGE_PATH_5_HERE" alt="Game 5 Title">
-        </div>
-
-        <div class="game-box" onclick="launch('YOUR_GAME_URL_6_HERE')">
-            <img src="YOUR_IMAGE_PATH_6_HERE" alt="Game 6 Title">
-        </div>
-
-        </div>
-
-    <script>
-        function launch(url) {
-            // 1. Open the blank page
-            var win = window.open('about:blank', '_blank');
-
-            // 2. Format the blank page
-            win.document.body.style.margin = '0';
-            win.document.body.style.height = '100vh';
-
-            // 3. Create and configure the iframe
-            var iframe = win.document.createElement('iframe');
-            iframe.style.border = 'none';
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
-            iframe.style.margin = '0';
-            iframe.src = url;
-
-            // 4. Inject the iframe
-            win.document.body.appendChild(iframe);
-        }
-    </script>
+        <a href="game3.html" class="game-box">
+            <div style="font-size: 40px;">🕹️</div>
+            <span>GAME 3</span>
+        </a>
+    </div>
 
 </body>
 </html>
