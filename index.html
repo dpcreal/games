@@ -3,139 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Classroom</title> <style>
+    <title>Woodpecker(from dps) game portal</title>
+    <style>
+        /* General styling for the page */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff;
+            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 40px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* Top Bar Layout (Matches your photo) */
-        .header-container {
+        /* Top section layout */
+        .top-container {
             width: 100%;
-            max-width: 1100px;
+            max-width: 1000px;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 50px;
+            justify-content: flex-start; /* Align content to the left */
+            align-items: flex-start; /* Top align items */
+            margin-bottom: 20px;
         }
 
-        .title {
-            font-size: 28px;
-            font-weight: 800;
-            width: 250px; /* Forces the text to wrap like your drawing */
-            line-height: 1.2;
-            color: #222;
+        /* Title style based on your photo */
+        .page-title {
+            width: 30%; /* Limits title width to create line breaks like in photo */
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+            padding-right: 20px;
         }
 
-        /* Search Bar Placeholder */
-        .search-bar {
-            flex-grow: 1;
-            margin-left: 50px;
-            padding: 12px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            color: #888;
+        /* Placeholder for your search bar text */
+        .search-placeholder {
+            flex-grow: 1; /* Occupies remaining space */
+            text-align: left;
             font-size: 16px;
-            background: #fdfdfd;
+            margin: 0;
         }
 
-        /* Game Grid (3 Columns) */
-        .grid {
+        /* Grid container for the games */
+        .game-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
+            grid-template-columns: repeat(3, 1fr); /* Exactly 3 columns as requested */
+            gap: 20px; /* Space between grid items */
             width: 100%;
-            max-width: 1100px;
+            max-width: 1000px;
         }
 
-        /* Game Square */
-        .game-card {
-            aspect-ratio: 1 / 1;
-            border: 3px solid #000; /* Bold borders like your sketch */
-            background-color: #fff;
+        /* Styling for each game box */
+        .game-box {
+            width: 100%;
+            aspect-ratio: 1 / 1; /* Makes the box a perfect square */
+            border: 2px solid #ccc;
+            border-radius: 8px; /* Optional slight rounding for better look */
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            overflow: hidden; /* Ensures nothing spills out of the border */
+            transition: transform 0.2s, box-shadow 0.2s;
+            background-color: #f9f9f9;
         }
 
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            border-color: #007bff;
+        /* Hover effects for game boxes */
+        .game-box:hover {
+            transform: scale(1.03); /* Subtle zoom-in */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-color: #007BFF; /* Blue border on hover */
         }
 
-        .game-card img {
+        /* Makes sure images inside game-boxes fit perfectly */
+        .game-box img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-        }
-
-        .label {
-            margin-top: 8px;
-            font-weight: bold;
-            text-align: center;
+            object-fit: cover; /* Images cover the space without stretching */
+            display: block; /* Prevents alignment issues */
         }
     </style>
 </head>
 <body>
 
-    <div class="header-container">
-        <div class="title">Woodpecker (from dps) game portal</div>
-        <input type="text" class="search-bar" placeholder="Search games...">
+    <div class="top-container">
+        <h1 class="page-title">Woodpecker(from dps) game portal</h1>
+        <p class="search-placeholder">Search bar will be here.</p>
     </div>
 
-    <div class="grid">
-        <div class="game-item">
-            <div class="game-card" onclick="launchGame('slope.html')">
-                <img src="https://via.placeholder.com/300?text=Slope" alt="Slope">
-            </div>
-            <div class="label">Slope</div>
+    <div class="game-grid">
+
+        <div class="game-box" onclick="launch('YOUR_GAME_URL_1_HERE')">
+            <img src="YOUR_IMAGE_PATH_1_HERE" alt="Game 1 Title">
         </div>
 
-        <div class="game-item">
-            <div class="game-card" onclick="launchGame('minecraft.html')">
-                <img src="https://via.placeholder.com/300?text=Minecraft" alt="Minecraft">
-            </div>
-            <div class="label">Minecraft</div>
+        <div class="game-box" onclick="launch('YOUR_GAME_URL_2_HERE')">
+            <img src="YOUR_IMAGE_PATH_2_HERE" alt="Game 2 Title">
         </div>
 
-        <div class="game-item">
-            <div class="game-card" onclick="launchGame('retro-bowl.html')">
-                <img src="https://via.placeholder.com/300?text=Retro+Bowl" alt="Retro Bowl">
-            </div>
-            <div class="label">Retro Bowl</div>
+        <div class="game-box" onclick="launch('YOUR_GAME_URL_3_HERE')">
+            <img src="YOUR_IMAGE_PATH_3_HERE" alt="Game 3 Title">
+        </div>
+
+        <div class="game-box" onclick="launch('YOUR_GAME_URL_4_HERE')">
+            <img src="YOUR_IMAGE_PATH_4_HERE" alt="Game 4 Title">
+        </div>
+
+        <div class="game-box" onclick="launch('YOUR_GAME_URL_5_HERE')">
+            <img src="YOUR_IMAGE_PATH_5_HERE" alt="Game 5 Title">
+        </div>
+
+        <div class="game-box" onclick="launch('YOUR_GAME_URL_6_HERE')">
+            <img src="YOUR_IMAGE_PATH_6_HERE" alt="Game 6 Title">
         </div>
 
         </div>
 
     <script>
-        function launchGame(url) {
-            // Opens the about:blank page
+        function launch(url) {
+            // 1. Open the blank page
             var win = window.open('about:blank', '_blank');
-            if (win) {
-                win.document.body.style.margin = '0';
-                win.document.body.style.height = '100vh';
-                
-                // Creates the internal frame to host your Hub site
-                var iframe = win.document.createElement('iframe');
-                iframe.style.border = 'none';
-                iframe.style.width = '100%';
-                iframe.style.height = '100%';
-                iframe.style.margin = '0';
-                iframe.src = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + url;
 
-                win.document.body.appendChild(iframe);
-            } else {
-                alert("Please allow pop-ups to play!");
-            }
+            // 2. Format the blank page
+            win.document.body.style.margin = '0';
+            win.document.body.style.height = '100vh';
+
+            // 3. Create and configure the iframe
+            var iframe = win.document.createElement('iframe');
+            iframe.style.border = 'none';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.margin = '0';
+            iframe.src = url;
+
+            // 4. Inject the iframe
+            win.document.body.appendChild(iframe);
         }
     </script>
 
