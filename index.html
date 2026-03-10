@@ -2,63 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>New Tab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My GitHub Arcade</title>
     <style>
-        body { background: #121212; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        input { width: 350px; padding: 15px; border-radius: 8px; border: 2px solid #333; background: #1e1e1e; color: white; margin-bottom: 20px; outline: none; }
-        button { padding: 12px 30px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; margin: 5px; transition: 0.3s; }
-        .launch-btn { background: #444; color: white; }
-        .game-btn { background: #28a745; color: white; }
-        button:hover { opacity: 0.8; }
+        body { background-color: #1a1a1a; color: white; font-family: sans-serif; text-align: center; }
+        .game-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; }
+        .game-card { border: 2px solid #333; padding: 10px; border-radius: 10px; background: #222; width: 320px; }
+        iframe { width: 100%; height: 200px; border: none; border-radius: 5px; }
+        h1 { color: #00ffcc; text-shadow: 2px 2px #000; }
     </style>
 </head>
 <body>
 
-    <h1>WOODPECKER STEALTH</h1>
-    <input type="text" id="urlInput" placeholder="Enter URL (e.g. google.com)">
-    
-    <div>
-        <button class="launch-btn" onclick="launchCustom()">LAUNCH DISGUISE</button>
-        <button class="game-btn" onclick="launchPortal()">OPEN GAME HUB</button>
-    </div>
+    <h1>🎮 My GitHub Gaming Hub</h1>
+    <p>Welcome to my collection of embedded games.</p>
 
-    <script>
-        // Separate function for your specific portal
-        function launchPortal() {
-            openInBlank("https://dpcreal.github.io/games/");
-        }
+    <div class="game-container">
+        <div class="game-card">
+            <h3>Game Title 1</h3>
+            <div class="embed-wrapper">
+                <iframe src="https://www.example.com/your-game-link"></iframe>
+            </div>
+            <p>A short description of the game.</p>
+        </div>
 
-        // Function for custom URLs
-        function launchCustom() {
-            let input = document.getElementById('urlInput').value;
-            if (!input) return alert("Please enter a URL");
-            let target = input.startsWith('http') ? input : 'https://' + input;
-            openInBlank(target);
-        }
+        </div>
 
-        function openInBlank(url) {
-            const win = window.open('about:blank', '_blank');
-            if (win) {
-                win.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Google</title>
-                        <link rel="icon" href="https://www.google.com/favicon.ico">
-                        <script src="https://unpkg.com/@ungap/custom-elements-builtin"><\/script>
-                        <script type="module" src="https://unpkg.com/x-frame-bypass"><\/script>
-                        <style>body,html{margin:0;padding:0;height:100vh;overflow:hidden;background:#000;}iframe{width:100%;height:100%;border:none;}</style>
-                    </head>
-                    <body>
-                        <iframe is="x-frame-bypass" src="${url}"></iframe>
-                    </body>
-                    </html>
-                `);
-                win.document.close();
-            } else {
-                alert("Pop-up blocked! Please allow pop-ups.");
-            }
-        }
-    </script>
 </body>
 </html>
