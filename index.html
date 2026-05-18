@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unstoppable Games</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Unstoppable games home">Unstoppable games</a>
+    <form class="search" id="searchForm" role="search">
+      <input id="searchInput" type="search" placeholder="Search..." aria-label="Search games" autocomplete="off">
+      <button type="submit" aria-label="Search">
+        <span class="search-icon" aria-hidden="true"></span>
+      </button>
+    </form>
+  </header>
+
+  <main class="arcade">
+    <section class="game-grid" id="gameGrid" aria-label="Games">
+      <a class="game-tile tile-slope" href="/slope/" data-title="slope">
+        <span>Slope</span>
+      </a>
+      <a class="game-tile tile-snow" href="/Snow-Rider3D-main/" data-title="snow rider 3d snow rider">
+        <span>Snow Rider 3D</span>
+      </a>
+      <a class="game-tile tile-snake" href="/games/snake/" data-title="snake neon snake">
+        <span>Snake</span>
+      </a>
+      <a class="game-tile tile-breakout" href="/games/breakout/" data-title="breakout paddle break">
+        <span>Breakout</span>
+      </a>
+      <a class="game-tile tile-memory" href="/games/memory-match/" data-title="memory match cards">
+        <span>Memory Match</span>
+      </a>
+      <a class="game-tile tile-dodge" href="/games/block-dodge/" data-title="block dodge runner">
+        <span>Block Dodge</span>
+      </a>
+    </section>
+    <p class="no-results" id="noResults">No games found.</p>
+  </main>
+</body>
+</html>

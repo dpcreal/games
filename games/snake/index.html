@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake - Unstoppable Games</title>
+  <link rel="stylesheet" href="/games/shared/game-shell.css">
+</head>
+<body>
+  <header class="game-bar">
+    <a href="/">Back</a>
+    <h1>Snake</h1>
+    <button id="reset" type="button">Reset</button>
+  </header>
+  <div class="stats">
+    <span>Score: <span id="score">0</span></span>
+    <span>Best: <span id="best">0</span></span>
+  </div>
+  <main class="stage">
+    <canvas id="game" width="520" height="520" aria-label="Snake game"></canvas>
+    <p class="small-note">Arrow keys or WASD</p>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#game");
+    const ctx = canvas.getContext("2d");
+    const scoreNode = document.querySelector("#score");
+    const bestNode = document.querySelector("#best");
+    const resetButton = document.querySelector("#reset");
+    const cells = 20;
+    const size = canvas.width / cells;
+    let snake;
+    let direction;
+    let nextDirection;
+    let food;
+    let score;
+    let best = Number(localStorage.getItem("snake-best") || 0);
+    let gameOver;
+
+    bestNode.textContent = best;
+
+    function start() {
+      snake = [{ x: 9, y: 10 }, { x: 8, y: 10 }, { x: 7, y: 10 }];
+      direction = { x: 1, y: 0 };
+      nextDirection = direction;
+      score = 0;
+      gameOver = false;
+      scoreNode.textContent = score;
+      placeFood();
+      draw();
+    }
+
+    function placeFood() {
+      do {
+        food = {
+          x: Math.floor(Math.random() * cells),
+          y: Math.floor(Math.random() * cells)
+        };
+      } while (snake.some((part) => part.x === food.x && part.y === food.y));
+    }
+
+    function setDirection(x, y) {
+      if (direction.x + x === 0 && direction.y + y === 0) {
+        return;
+      }
+      nextDirection = { x, y };
+    }
+
+    function step() {
+      if (gameOver) {
+        draw();
+        return;
+      }
+
+      direction = nextDirection;
+      const head = snake[0];
+      const next = { x: head.x + direction.x, y: head.y + direction.y };
+
+      if (
+        next.x < 0 || next.x >= cells ||
+        next.y < 0 || next.y >= cells ||
+        snake.some((part) => part.x === next.x && part.y === next.y)
+      ) {
+        gameOver = true;
+        best = Math.max(best, score);
+        localStorage.setItem("snake-best", String(best));
+        bestNode.textContent = best;
+        draw();
+        return;
+      }
+
+      snake.unshift(next);
+      if (next.x === food.x && next.y === food.y) {
+        score += 10;
+        scoreNode.textContent = score;
+        placeFood();
+      } else {
+        snake.pop();
+      }
+
+      draw();
+    }
+
+    function drawCell(x, y, color) {
+      ctx.fillStyle = color;
+      ctx.fillRect(x * size + 2, y * size + 2, size - 4, size - 4);
+    }
+
+    function draw() {
+      ctx.fillStyle = "#100000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "rgba(255,255,255,0.08)";
+      for (let i = 0; i <= cells; i += 1) {
+        ctx.beginPath();
+        ctx.moveTo(i * size, 0);
+        ctx.lineTo(i * size, canvas.height);
+        ctx.moveTo(0, i * size);
+        ctx.lineTo(canvas.width, i * size);
+        ctx.stroke();
+      }
+
+      drawCell(food.x, food.y, "#ffffff");
+      snake.forEach((part, index) => drawCell(part.x, part.y, index === 0 ? "#7cff4d" : "#26b50f"));
+
+      if (gameOver) {
+        ctx.fillStyle = "rgba(0,0,0,0.7)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#fff";
+        ctx.font = "800 34px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 10);
+        ctx.font = "700 18px Arial";
+        ctx.fillText("Press Reset", canvas.width / 2, canvas.height / 2 + 28);
+      }
+    }
+
+    window.addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
+      if (key === "arrowup" || key === "w") setDirection(0, -1);
+      if (key === "arrowdown" || key === "s") setDirection(0, 1);
+      if (key === "arrowleft" || key === "a") setDirection(-1, 0);
+      if (key === "arrowright" || key === "d") setDirection(1, 0);
+    });
+
+    resetButton.addEventListener("click", start);
+    start();
+    setInterval(step, 115);
+  </script>
+</body>
+</html>
