@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breakout - Unstoppable Games</title>
+  <link rel="stylesheet" href="/games/shared/game-shell.css">
+  <style>
+    canvas {
+      aspect-ratio: 640 / 520;
+    }
+  </style>
+</head>
+<body>
+  <header class="game-bar">
+    <a href="/">Back</a>
+    <h1>Breakout</h1>
+    <button id="reset" type="button">Reset</button>
+  </header>
+  <div class="stats">
+    <span>Score: <span id="score">0</span></span>
+    <span>Lives: <span id="lives">3</span></span>
+  </div>
+  <main class="stage">
+    <canvas id="game" width="640" height="520" aria-label="Breakout game"></canvas>
+    <p class="small-note">Mouse, touch, or arrow keys</p>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#game");
+    const ctx = canvas.getContext("2d");
+    const scoreNode = document.querySelector("#score");
+    const livesNode = document.querySelector("#lives");
+    const resetButton = document.querySelector("#reset");
+    const paddle = { x: 260, y: 480, w: 120, h: 14, speed: 8 };
+    const ball = { x: 320, y: 360, r: 9, vx: 4, vy: -4 };
+    const keys = new Set();
+    let score = 0;
+    let lives = 3;
+    let bricks = [];
+    let running = true;
+
+    function buildBricks() {
+      bricks = [];
+      for (let row = 0; row < 5; row += 1) {
+        for (let col = 0; col < 8; col += 1) {
+          bricks.push({ x: 36 + col * 72, y: 54 + row * 28, w: 56, h: 18, alive: true });
+        }
+      }
+    }
+
+    function resetBall() {
+      ball.x = canvas.width / 2;
+      ball.y = 360;
+      ball.vx = Math.random() > 0.5 ? 4 : -4;
+      ball.vy = -4;
+      paddle.x = (canvas.width - paddle.w) / 2;
+    }
+
+    function start() {
+      score = 0;
+      lives = 3;
+      running = true;
+      buildBricks();
+      resetBall();
+      updateStats();
+    }
+
+    function updateStats() {
+      scoreNode.textContent = score;
+      livesNode.textContent = lives;
+    }
+
+    function update() {
+      if (!running) {
+        draw();
+        requestAnimationFrame(update);
+        return;
+      }
+
+      if (keys.has("arrowleft") || keys.has("a")) paddle.x -= paddle.speed;
+      if (keys.has("arrowright") || keys.has("d")) paddle.x += paddle.speed;
+      paddle.x = Math.max(0, Math.min(canvas.width - paddle.w, paddle.x));
+
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+
+      if (ball.x - ball.r < 0 || ball.x + ball.r > canvas.width) ball.vx *= -1;
+      if (ball.y - ball.r < 0) ball.vy *= -1;
+
+      if (
+        ball.x > paddle.x &&
+        ball.x < paddle.x + paddle.w &&
+        ball.y + ball.r > paddle.y &&
+        ball.y - ball.r < paddle.y + paddle.h
+      ) {
+        const hit = (ball.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2);
+        ball.vx = hit * 6;
+        ball.vy = -Math.abs(ball.vy);
+      }
+
+      bricks.forEach((brick) => {
+        if (!brick.alive) return;
+        if (
+          ball.x + ball.r > brick.x &&
+          ball.x - ball.r < brick.x + brick.w &&
+          ball.y + ball.r > brick.y &&
+          ball.y - ball.r < brick.y + brick.h
+        ) {
+          brick.alive = false;
+          ball.vy *= -1;
+          score += 25;
+          updateStats();
+        }
+      });
+
+      if (ball.y - ball.r > canvas.height) {
+        lives -= 1;
+        updateStats();
+        if (lives <= 0) {
+          running = false;
+        } else {
+          resetBall();
+        }
+      }
+
+      if (bricks.every((brick) => !brick.alive)) {
+        running = false;
+      }
+
+      draw();
+      requestAnimationFrame(update);
+    }
+
+    function draw() {
+      ctx.fillStyle = "#120000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      bricks.forEach((brick, index) => {
+        if (!brick.alive) return;
+        const colors = ["#ffeded", "#ffc233", "#ff7733", "#ff3b3b", "#9f30ff"];
+        ctx.fillStyle = colors[index % colors.length];
+        ctx.fillRect(brick.x, brick.y, brick.w, brick.h);
+      });
+
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
+
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+
+      if (!running) {
+        ctx.fillStyle = "rgba(0,0,0,0.7)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#fff";
+        ctx.font = "800 34px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(bricks.every((brick) => !brick.alive) ? "Cleared" : "Game Over", canvas.width / 2, canvas.height / 2);
+      }
+    }
+
+    function setPaddleFromClientX(clientX) {
+      const rect = canvas.getBoundingClientRect();
+      const scale = canvas.width / rect.width;
+      paddle.x = (clientX - rect.left) * scale - paddle.w / 2;
+    }
+
+    window.addEventListener("keydown", (event) => keys.add(event.key.toLowerCase()));
+    window.addEventListener("keyup", (event) => keys.delete(event.key.toLowerCase()));
+    canvas.addEventListener("mousemove", (event) => setPaddleFromClientX(event.clientX));
+    canvas.addEventListener("touchmove", (event) => {
+      event.preventDefault();
+      setPaddleFromClientX(event.touches[0].clientX);
+    }, { passive: false });
+    resetButton.addEventListener("click", start);
+
+    start();
+    update();
+  </script>
+</body>
+</html>

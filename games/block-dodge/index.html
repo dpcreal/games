@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Block Dodge - Unstoppable Games</title>
+  <link rel="stylesheet" href="/games/shared/game-shell.css">
+</head>
+<body>
+  <header class="game-bar">
+    <a href="/">Back</a>
+    <h1>Block Dodge</h1>
+    <button id="reset" type="button">Reset</button>
+  </header>
+  <div class="stats">
+    <span>Score: <span id="score">0</span></span>
+    <span>Best: <span id="best">0</span></span>
+  </div>
+  <main class="stage">
+    <canvas id="game" width="520" height="520" aria-label="Block dodge game"></canvas>
+    <p class="small-note">Arrow keys, WASD, mouse, or touch</p>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#game");
+    const ctx = canvas.getContext("2d");
+    const scoreNode = document.querySelector("#score");
+    const bestNode = document.querySelector("#best");
+    const resetButton = document.querySelector("#reset");
+    const player = { x: 240, y: 452, w: 40, h: 40, speed: 7 };
+    const keys = new Set();
+    let blocks = [];
+    let score = 0;
+    let best = Number(localStorage.getItem("dodge-best") || 0);
+    let frames = 0;
+    let running = true;
+
+    bestNode.textContent = best;
+
+    function start() {
+      player.x = 240;
+      player.y = 452;
+      blocks = [];
+      score = 0;
+      frames = 0;
+      running = true;
+      scoreNode.textContent = score;
+      draw();
+    }
+
+    function spawnBlock() {
+      const size = 26 + Math.random() * 38;
+      blocks.push({
+        x: Math.random() * (canvas.width - size),
+        y: -size,
+        w: size,
+        h: size,
+        speed: 2.5 + Math.random() * 4
+      });
+    }
+
+    function hit(a, b) {
+      return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+    }
+
+    function update() {
+      if (!running) {
+        draw();
+        requestAnimationFrame(update);
+        return;
+      }
+
+      frames += 1;
+      if (frames % Math.max(18, 48 - Math.floor(score / 120)) === 0) {
+        spawnBlock();
+      }
+
+      if (keys.has("arrowleft") || keys.has("a")) player.x -= player.speed;
+      if (keys.has("arrowright") || keys.has("d")) player.x += player.speed;
+      if (keys.has("arrowup") || keys.has("w")) player.y -= player.speed;
+      if (keys.has("arrowdown") || keys.has("s")) player.y += player.speed;
+      player.x = Math.max(0, Math.min(canvas.width - player.w, player.x));
+      player.y = Math.max(0, Math.min(canvas.height - player.h, player.y));
+
+      blocks.forEach((block) => {
+        block.y += block.speed;
+      });
+
+      blocks = blocks.filter((block) => {
+        if (block.y > canvas.height) {
+          score += 10;
+          scoreNode.textContent = score;
+          return false;
+        }
+        return true;
+      });
+
+      if (blocks.some((block) => hit(player, block))) {
+        running = false;
+        best = Math.max(best, score);
+        localStorage.setItem("dodge-best", String(best));
+        bestNode.textContent = best;
+      }
+
+      draw();
+      requestAnimationFrame(update);
+    }
+
+    function draw() {
+      ctx.fillStyle = "#100000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(255,255,255,0.08)";
+      for (let i = 0; i < canvas.width; i += 26) {
+        ctx.fillRect(i, 0, 1, canvas.height);
+        ctx.fillRect(0, i, canvas.width, 1);
+      }
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(player.x, player.y, player.w, player.h);
+
+      ctx.fillStyle = "#000";
+      blocks.forEach((block) => ctx.fillRect(block.x, block.y, block.w, block.h));
+
+      if (!running) {
+        ctx.fillStyle = "rgba(0,0,0,0.7)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#fff";
+        ctx.font = "800 34px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 10);
+        ctx.font = "700 18px Arial";
+        ctx.fillText("Press Reset", canvas.width / 2, canvas.height / 2 + 28);
+      }
+    }
+
+    function movePlayerTo(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      player.x = (clientX - rect.left) * scaleX - player.w / 2;
+      player.y = (clientY - rect.top) * scaleY - player.h / 2;
+    }
+
+    window.addEventListener("keydown", (event) => keys.add(event.key.toLowerCase()));
+    window.addEventListener("keyup", (event) => keys.delete(event.key.toLowerCase()));
+    canvas.addEventListener("mousemove", (event) => movePlayerTo(event.clientX, event.clientY));
+    canvas.addEventListener("touchmove", (event) => {
+      event.preventDefault();
+      movePlayerTo(event.touches[0].clientX, event.touches[0].clientY);
+    }, { passive: false });
+    resetButton.addEventListener("click", start);
+
+    start();
+    update();
+  </script>
+</body>
+</html>

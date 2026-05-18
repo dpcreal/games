@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Match - Unstoppable Games</title>
+  <link rel="stylesheet" href="/games/shared/game-shell.css">
+  <style>
+    .board {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 10px;
+      background: #100000;
+    }
+
+    .card {
+      border: 6px solid #000;
+      background: #8e0000;
+      color: #fff;
+      font: 800 34px/1 Arial, Helvetica, sans-serif;
+      cursor: pointer;
+    }
+
+    .card.is-open,
+    .card.is-matched {
+      background: var(--card-color);
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <header class="game-bar">
+    <a href="/">Back</a>
+    <h1>Memory Match</h1>
+    <button id="reset" type="button">Reset</button>
+  </header>
+  <div class="stats">
+    <span>Moves: <span id="moves">0</span></span>
+    <span>Matches: <span id="matches">0</span></span>
+  </div>
+  <main class="stage">
+    <section class="board" id="board" aria-label="Memory match board"></section>
+  </main>
+
+  <script>
+    const board = document.querySelector("#board");
+    const movesNode = document.querySelector("#moves");
+    const matchesNode = document.querySelector("#matches");
+    const resetButton = document.querySelector("#reset");
+    const colors = ["#ffffff", "#ffcb35", "#48e650", "#4be5ff", "#ff7ad9", "#b874ff", "#ff814a", "#9cff8f"];
+    let firstCard = null;
+    let lock = false;
+    let moves = 0;
+    let matches = 0;
+
+    function shuffle(items) {
+      const copy = [...items];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function start() {
+      firstCard = null;
+      lock = false;
+      moves = 0;
+      matches = 0;
+      movesNode.textContent = moves;
+      matchesNode.textContent = matches;
+      board.innerHTML = "";
+      shuffle([...colors, ...colors]).forEach((color, index) => {
+        const button = document.createElement("button");
+        button.className = "card";
+        button.type = "button";
+        button.dataset.color = color;
+        button.style.setProperty("--card-color", color);
+        button.setAttribute("aria-label", "Hidden card " + (index + 1));
+        button.addEventListener("click", () => flip(button));
+        board.appendChild(button);
+      });
+    }
+
+    function flip(card) {
+      if (lock || card.classList.contains("is-open") || card.classList.contains("is-matched")) {
+        return;
+      }
+
+      card.classList.add("is-open");
+      card.textContent = "*";
+
+      if (!firstCard) {
+        firstCard = card;
+        return;
+      }
+
+      moves += 1;
+      movesNode.textContent = moves;
+
+      if (firstCard.dataset.color === card.dataset.color) {
+        firstCard.classList.add("is-matched");
+        card.classList.add("is-matched");
+        firstCard = null;
+        matches += 1;
+        matchesNode.textContent = matches;
+        return;
+      }
+
+      lock = true;
+      setTimeout(() => {
+        firstCard.classList.remove("is-open");
+        card.classList.remove("is-open");
+        firstCard.textContent = "";
+        card.textContent = "";
+        firstCard = null;
+        lock = false;
+      }, 650);
+    }
+
+    resetButton.addEventListener("click", start);
+    start();
+  </script>
+</body>
+</html>
